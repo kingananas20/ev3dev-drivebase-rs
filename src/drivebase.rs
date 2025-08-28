@@ -21,3 +21,9 @@ impl DriveBase {
         Ok(self)
     }
 }
+
+impl Drop for DriveBase {
+    fn drop(&mut self) {
+        let _ = self.stop();
+    }
+}
