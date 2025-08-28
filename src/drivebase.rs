@@ -26,6 +26,26 @@ impl DriveBase {
         self.right.reset()?;
         Ok(self)
     }
+
+    pub fn is_running(&self) -> Result<bool, Ev3Error> {
+        Ok(self.left.is_running()? && self.right.is_running()?)
+    }
+
+    pub fn is_ramping(&self) -> Result<bool, Ev3Error> {
+        Ok(self.left.is_ramping()? && self.right.is_ramping()?)
+    }
+
+    pub fn is_holding(&self) -> Result<bool, Ev3Error> {
+        Ok(self.left.is_holding()? && self.right.is_holding()?)
+    }
+
+    pub fn is_overloaded(&self) -> Result<bool, Ev3Error> {
+        Ok(self.left.is_overloaded()? && self.right.is_overloaded()?)
+    }
+
+    pub fn is_stalled(&self) -> Result<bool, Ev3Error> {
+        Ok(self.left.is_stalled()? && self.right.is_stalled()?)
+    }
 }
 
 impl Drop for DriveBase {
