@@ -4,6 +4,7 @@ use std::{thread::sleep, time::Duration};
 
 fn main() -> Result<(), Ev3Error> {
     let drivebase = DriveBase::new(MotorPort::OutC, MotorPort::OutD)?;
+    drivebase.reset()?;
 
     /*left.set_speed_sp(500)?;
     right.set_speed_sp(500)?;

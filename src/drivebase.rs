@@ -20,6 +20,12 @@ impl DriveBase {
         self.right.stop()?;
         Ok(self)
     }
+
+    pub fn reset(&self) -> Result<&Self, Ev3Error> {
+        self.left.reset()?;
+        self.right.reset()?;
+        Ok(self)
+    }
 }
 
 impl Drop for DriveBase {
