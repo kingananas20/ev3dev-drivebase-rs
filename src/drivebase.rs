@@ -1,9 +1,10 @@
+mod run;
 mod speed;
 mod utils;
-
-use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor};
+mod wait;
 
 use crate::Motor;
+use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor};
 
 /// The `DriveBase` struct which holds all the needed fields
 #[derive(Debug, Clone)]
