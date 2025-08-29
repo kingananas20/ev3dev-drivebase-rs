@@ -2,4 +2,5 @@
 target = "armv5te-unknown-linux-musleabi"
 
 [target.armv5te-unknown-linux-musleabi]
+runner = 'sh ./run.sh'
 linker = "rust-lld"

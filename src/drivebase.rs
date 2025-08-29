@@ -1,3 +1,4 @@
+mod drive;
 mod run;
 mod speed;
 mod utils;
@@ -5,6 +6,7 @@ mod wait;
 
 use crate::Motor;
 use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor};
+use std::f64::consts::PI;
 
 /// The `DriveBase` struct which holds all the needed fields
 #[derive(Debug, Clone)]
@@ -17,6 +19,8 @@ pub struct DriveBase {
     pub left_meta: Motor,
     /// Metadata of the right motor
     pub right_meta: Motor,
+    /// The circumference of the wheels in mm
+    pub circumference: f64,
 }
 
 impl DriveBase {
@@ -25,29 +29,18 @@ impl DriveBase {
     /// # Errors
     ///
     /// Errors if the port is not used or used by another device.
-    pub fn new(left_meta: Motor, right_meta: Motor) -> Result<Self, Ev3Error> {
+    pub fn new(left_meta: Motor, right_meta: Motor, wheel_diameter: f64) -> Result<Self, Ev3Error> {
         let left = TachoMotor::get(left_meta.port)?;
         let right = TachoMotor::get(right_meta.port)?;
+        let circumference = PI * wheel_diameter;
         let drivebase = Self {
             left,
             right,
             left_meta,
             right_meta,
+            circumference,
         };
         drivebase.reset()?;
         Ok(drivebase)
-    }
-
-    /// Runs forever with the given speed.
-    ///
-    /// # Errors
-    ///
-    /// Errors if it can't write to the corresponding sysfs file
-    pub fn run_forever(&self, speed: i32) -> Result<&Self, Ev3Error> {
-        self.set_speed(speed)?;
-
-        self.left.run_forever()?;
-        self.right.run_forever()?;
-        Ok(self)
     }
 }
