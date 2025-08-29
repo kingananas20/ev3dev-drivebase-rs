@@ -1,15 +1,11 @@
 #!/bin/sh
 
-# Convert Windows-style path to Unix-style for sh
-BINARY_PATH="$1"
-BINARY_PATH_UNIX=$(echo "$BINARY_PATH" | sed 's|\\|/|g')
+SERVER="robot"
+REMOTE_DIR="~"
+REMOTE_CMD="cd ~ && ./ev3"
 
-SERVER="jonas"
-REMOTE_DIR="~/ev3"
-REMOTE_CMD="cd ~/ev3 && ./ev3"
+# Copy binary
+scp "$1" "$SERVER:$REMOTE_DIR"
 
-# 1. Copy binary
-scp "$BINARY_PATH_UNIX" "$SERVER:$REMOTE_DIR"
-
-# 2. Run commands on the server
+# Execute on EV3
 ssh "$SERVER" "$REMOTE_CMD"

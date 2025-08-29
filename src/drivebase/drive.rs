@@ -33,8 +33,8 @@ impl DriveBase {
     /// ```
     #[expect(clippy::cast_possible_truncation)]
     pub fn drive(&self, speed: i32, distance: impl Into<Option<i32>>) -> Result<&Self, Ev3Error> {
-        let distance: Option<i32> = distance.into();
-        self.set_speed(speed)?;
+        let distance = distance.into();
+        self.set_speed(speed, distance)?;
 
         let Some(distance) = distance else {
             self.left.run_forever()?;
