@@ -1,20 +1,18 @@
-use ev3::{DriveBase, ev3dev_lang_rust::motors::MotorPort};
+//! Simple program purely for testing
+
+use ev3::{Direction, DriveBase, Motor, ev3dev_lang_rust::motors::MotorPort};
 use ev3dev_lang_rust::Ev3Error;
 use std::{thread::sleep, time::Duration};
 
 fn main() -> Result<(), Ev3Error> {
-    let drivebase = DriveBase::new(MotorPort::OutC, MotorPort::OutD)?;
+    let left = Motor::new(MotorPort::OutD, Direction::CounterClockwise);
+    let right = Motor::new(MotorPort::OutC, Direction::Clockwise);
+    let drivebase = DriveBase::new(left, right)?;
     drivebase.reset()?;
 
-    /*left.set_speed_sp(500)?;
-    right.set_speed_sp(500)?;
+    drivebase.run_forever(500)?;
 
-    left.run_forever()?;
-    right.run_forever()?;*/
-
-    sleep(Duration::from_secs(10));
-
-    drivebase.stop()?;
+    sleep(Duration::from_secs(1));
 
     Ok(())
 }

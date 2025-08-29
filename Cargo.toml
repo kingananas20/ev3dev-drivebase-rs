@@ -2,6 +2,36 @@
 name = "ev3"
 version = "0.1.0"
 edition = "2024"
+description = "A DriveBase for the EV3 similar to the Python one"
+license-file = "LICENSE"
+repository = "https://github.com/Kingananas20/ev3dev-drivebase-rs"
+readme = "README.md"
+keywords = ["ev3", "robotics"]
+categories = ["api-bindings", "embedded-development", "hardware-support"]
 
 [dependencies]
 ev3dev-lang-rust = "0.15.0"
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "deny"
+missing_debug_implementations = "deny"
+unused_must_use = "deny"
+unreachable_patterns = "warn"
+
+[lints.clippy]
+unwrap_used = { level = "deny", priority = 1 }
+expect_used = { level = "deny", priority = 1 }
+allow_attributes = { level = "deny", priority = 1 }
+correctness = "deny"
+nursery = "deny"
+suspicious = "deny"
+complexity = "deny"
+style = "deny"
+needless_pass_by_value = { level = "allow", priority = 1 }
+perf = "deny"
+cargo = "deny"
+pedantic = "warn"
+dbg_macro = { level = "warn", priority = 1 }
+todo = { level = "warn", priority = 1 }
+unimplemented = { level = "warn", priority = 1 }
