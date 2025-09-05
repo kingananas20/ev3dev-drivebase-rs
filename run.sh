@@ -2,7 +2,7 @@
 
 SERVER="robot"
 REMOTE_DIR="~"
-REMOTE_CMD="cd ~ && ./ev3"
+REMOTE_CMD="cd ~ && ./ev3-drivebase"
 
 # Copy binary using rsync
 rsync -ah --progress -z "$1" "$SERVER:$REMOTE_DIR"

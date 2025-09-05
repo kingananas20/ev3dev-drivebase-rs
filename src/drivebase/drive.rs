@@ -34,45 +34,54 @@ impl DriveBase {
     #[expect(clippy::cast_possible_truncation)]
     pub fn drive(
         &self,
-        speed: i32,
-        distance: impl Into<Option<i32>>,
+        mut speed: i32,
+        distance: impl Into<i32>,
         stop: bool,
     ) -> Result<&Self, Ev3Error> {
-        let distance = distance.into();
-        self.set_speed(speed, distance)?;
-
-        let Some(distance) = distance else {
-            self.run_forever()?;
+        let distance: i32 = distance.into();
+        if distance == 0 {
             return Ok(self);
+        }
+
+        let direction = if distance < 0 {
+            Direction::CounterClockwise
+        } else {
+            Direction::Clockwise
         };
 
-        let mut left_counts = ((f64::from(distance) / self.circumference)
+        speed = speed.abs();
+
+        self.set_speed(speed, direction)?;
+
+        let distance_abs = distance.abs();
+
+        let mut left_counts = ((f64::from(distance_abs) / self.circumference)
             * f64::from(self.left.get_count_per_rot()?))
         .round()
         .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
-        let mut right_counts = ((f64::from(distance) / self.circumference)
+
+        let mut right_counts = ((f64::from(distance_abs) / self.circumference)
             * f64::from(self.right.get_count_per_rot()?))
         .round()
         .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
 
-        match self.left_meta.direction {
-            Direction::Clockwise => {}
-            Direction::CounterClockwise => left_counts *= -1,
-        }
-        match self.right_meta.direction {
-            Direction::Clockwise => {}
-            Direction::CounterClockwise => right_counts *= -1,
-        }
+        println!("1 {left_counts} {right_counts}");
+
+        left_counts = left_counts
+            .saturating_mul(self.left_meta.direction.sign())
+            .saturating_mul(direction.sign());
+        right_counts = right_counts
+            .saturating_mul(self.right_meta.direction.sign())
+            .saturating_mul(direction.sign());
+
+        println!("2 {left_counts} {right_counts}");
 
         self.run_to_rel_pos(Some(left_counts), Some(right_counts))?;
-
         self.wait_until_not_moving(None);
 
-        if stop {
-            return Ok(self);
+        if !stop {
+            self.run_forever()?;
         }
-
-        self.run_forever()?;
 
         Ok(self)
     }

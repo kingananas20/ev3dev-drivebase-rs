@@ -19,9 +19,19 @@ impl Motor {
 
 /// The direction to make the robot go forward
 #[derive(Debug, Clone, Copy)]
+#[repr(i8)]
 pub enum Direction {
     /// Motor needs to turn clockwise to move forward
-    Clockwise,
+    Clockwise = 1,
     /// Motor needs to turn counter-clockwise to move forward
-    CounterClockwise,
+    CounterClockwise = -1,
+}
+
+impl Direction {
+    /// Gets the sign of the Direction
+    #[inline]
+    #[must_use]
+    pub const fn sign(self) -> i32 {
+        self as i8 as i32
+    }
 }
