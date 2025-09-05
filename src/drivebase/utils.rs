@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use super::DriveBase;
 use ev3dev_lang_rust::Ev3Error;
 
@@ -21,6 +23,22 @@ impl DriveBase {
     pub fn reset(&self) -> Result<&Self, Ev3Error> {
         self.left.reset()?;
         self.right.reset()?;
+        Ok(self)
+    }
+
+    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
+        self.left.wait_until_not_moving(timeout);
+        self.right.wait_until_not_moving(timeout);
+        self
+    }
+
+    pub(super) fn run_to_rel_pos(
+        &self,
+        left_position: Option<i32>,
+        right_position: Option<i32>,
+    ) -> Result<&Self, Ev3Error> {
+        self.left.run_to_rel_pos(left_position)?;
+        self.right.run_to_rel_pos(right_position)?;
         Ok(self)
     }
 

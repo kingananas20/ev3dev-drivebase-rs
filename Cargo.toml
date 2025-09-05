@@ -12,6 +12,11 @@ categories = ["api-bindings", "embedded-development", "hardware-support"]
 [dependencies]
 ev3dev-lang-rust = "0.15.0"
 
+[profile.release]
+lto = true
+strip = "symbols"
+opt-level = "z"
+
 [lints.rust]
 unsafe_code = "deny"
 missing_docs = "deny"

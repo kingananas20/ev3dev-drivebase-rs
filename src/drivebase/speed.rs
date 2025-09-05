@@ -3,6 +3,7 @@ use crate::Direction;
 use ev3dev_lang_rust::Ev3Error;
 
 impl DriveBase {
+    #[expect(clippy::cast_possible_truncation)]
     pub(super) fn set_speed(&self, speed: i32, distance: Option<i32>) -> Result<(), Ev3Error> {
         let speed_left = match self.left_meta.direction {
             Direction::Clockwise => speed,
@@ -18,7 +19,9 @@ impl DriveBase {
             let min_ramp = 50;
             let max_ramp = 1000;
 
-            let ramp_time = ((f64::from(dist) * ramp_fraction) * 10.0).round() as i32;
+            let ramp_time = ((f64::from(dist) * ramp_fraction) * 10.0)
+                .round()
+                .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
             let ramp_time = ramp_time.clamp(min_ramp, max_ramp);
 
             (ramp_time, ramp_time)

@@ -8,7 +8,7 @@ fn main() -> Result<(), Ev3Error> {
     let right = Motor::new(MotorPort::OutC, Direction::Clockwise);
     let drivebase = DriveBase::new(left, right, 43.)?;
 
-    drivebase.drive(300, 50)?;
+    drivebase.drive(300, 50, true)?;
     println!("done driving");
 
     Ok(())
