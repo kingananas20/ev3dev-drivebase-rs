@@ -5,6 +5,8 @@ use ev3dev_lang_rust::Ev3Error;
 impl DriveBase {
     /// Drives the robot forward or backward at the specified speed.
     ///
+    /// It's not accurate if the brake mode is set to `Coast`.
+    ///
     /// # Parameters
     ///
     /// - `speed`: The speed at which to drive the robot, in tacho counts per second (positive for forward, negative for backward).
@@ -20,20 +22,11 @@ impl DriveBase {
     ///
     /// Drive forward 500 mm at speed 200:
     /// ```rust
-    /// robot.drive(200, Some(500))?;
-    /// ```
-    /// or
-    /// ```rust
     /// robot.drive(200, 500)?;
-    /// ```
-    ///
-    /// Drive forward indefinitely at speed 150:
-    /// ```rust
-    /// robot.drive(150, None)?;
     /// ```
     #[expect(clippy::cast_possible_truncation)]
     pub fn drive(
-        &self,
+        &mut self,
         mut speed: i32,
         distance: impl Into<i32>,
         stop: bool,
@@ -65,8 +58,6 @@ impl DriveBase {
         .round()
         .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
 
-        println!("1 {left_counts} {right_counts}");
-
         left_counts = left_counts
             .saturating_mul(self.left_meta.direction.sign())
             .saturating_mul(direction.sign());
@@ -74,10 +65,21 @@ impl DriveBase {
             .saturating_mul(self.right_meta.direction.sign())
             .saturating_mul(direction.sign());
 
-        println!("2 {left_counts} {right_counts}");
+        let left_before = self.left.get_position()?;
+        let right_before = self.right.get_position()?;
 
         self.run_to_rel_pos(Some(left_counts), Some(right_counts))?;
         self.wait_until_not_moving(None);
+
+        let left_after = self.left.get_position()?;
+        let right_after = self.right.get_position()?;
+        println!(
+            "cmd L={} R={} | actual L={} R={}",
+            left_counts,
+            right_counts,
+            left_after - left_before,
+            right_after - right_before
+        );
 
         if !stop {
             self.run_forever()?;

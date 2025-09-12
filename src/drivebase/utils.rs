@@ -1,7 +1,6 @@
-use std::time::Duration;
-
 use super::DriveBase;
 use ev3dev_lang_rust::Ev3Error;
+use std::time::Duration;
 
 impl DriveBase {
     /// Stops both motors and is called on drop.
@@ -23,22 +22,6 @@ impl DriveBase {
     pub fn reset(&self) -> Result<&Self, Ev3Error> {
         self.left.reset()?;
         self.right.reset()?;
-        Ok(self)
-    }
-
-    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
-        self.left.wait_until_not_moving(timeout);
-        self.right.wait_until_not_moving(timeout);
-        self
-    }
-
-    pub(super) fn run_to_rel_pos(
-        &self,
-        left_position: Option<i32>,
-        right_position: Option<i32>,
-    ) -> Result<&Self, Ev3Error> {
-        self.left.run_to_rel_pos(left_position)?;
-        self.right.run_to_rel_pos(right_position)?;
         Ok(self)
     }
 
@@ -66,7 +49,7 @@ impl DriveBase {
     ///
     /// Errors if it can't read the sysfs
     pub fn is_holding(&self) -> Result<bool, Ev3Error> {
-        Ok(self.left.is_holding()? && self.right.is_holding()?)
+        Ok(self.left.is_holding()? || self.right.is_holding()?)
     }
 
     /// If any one of the motors are overloaded.
@@ -85,6 +68,22 @@ impl DriveBase {
     /// Errors if it can't read the sysfs
     pub fn is_stalled(&self) -> Result<bool, Ev3Error> {
         Ok(self.left.is_stalled()? || self.right.is_stalled()?)
+    }
+
+    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
+        self.left.wait_until_not_moving(timeout);
+        self.right.wait_until_not_moving(timeout);
+        self
+    }
+
+    pub(super) fn run_to_rel_pos(
+        &self,
+        left_position: Option<i32>,
+        right_position: Option<i32>,
+    ) -> Result<&Self, Ev3Error> {
+        self.left.run_to_rel_pos(left_position)?;
+        self.right.run_to_rel_pos(right_position)?;
+        Ok(self)
     }
 }
 

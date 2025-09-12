@@ -1,8 +1,12 @@
+mod brake_mode;
 mod drive;
+mod ramping;
 mod run;
 mod speed;
 mod utils;
 mod wait;
+
+pub use brake_mode::BrakeMode;
 
 use crate::Motor;
 use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor};
