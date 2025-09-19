@@ -85,10 +85,38 @@ impl DriveBase {
         self.right.run_to_rel_pos(right_position)?;
         Ok(self)
     }
+
+    /// Returns the encoder counts for a distance in mm with the correct
+    /// sign according to the motor direction.
+    #[expect(clippy::cast_possible_truncation)]
+    pub(super) fn calculate_counts(
+        &self,
+        left_distance: i32,
+        right_distance: i32,
+    ) -> Result<(i32, i32), Ev3Error> {
+        let left_distance = left_distance.abs();
+        let right_distance = right_distance.abs();
+
+        let mut left_counts = ((f64::from(left_distance) / self.circumference)
+            * f64::from(self.left.get_count_per_rot()?))
+        .round()
+        .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
+
+        let mut right_counts = ((f64::from(right_distance) / self.circumference)
+            * f64::from(self.right.get_count_per_rot()?))
+        .round()
+        .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
+
+        left_counts = left_counts.saturating_mul(self.left_meta.direction.sign());
+        right_counts = right_counts.saturating_mul(self.right_meta.direction.sign());
+
+        Ok((left_counts, right_counts))
+    }
 }
 
 impl Drop for DriveBase {
     fn drop(&mut self) {
         let _ = self.stop();
+        let _ = self.set_brake_mode(super::BrakeMode::Coast);
     }
 }

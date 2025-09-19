@@ -3,6 +3,7 @@ mod drive;
 mod ramping;
 mod run;
 mod speed;
+mod turn;
 mod utils;
 mod wait;
 
@@ -25,6 +26,8 @@ pub struct DriveBase {
     pub right_meta: Motor,
     /// The circumference of the wheels in mm
     pub circumference: f64,
+    /// The distance between the points where both wheels touch the ground.
+    pub axle_track: f64,
 }
 
 impl DriveBase {
@@ -33,7 +36,12 @@ impl DriveBase {
     /// # Errors
     ///
     /// Errors if the port is not used or used by another device.
-    pub fn new(left_meta: Motor, right_meta: Motor, wheel_diameter: f64) -> Result<Self, Ev3Error> {
+    pub fn new(
+        left_meta: Motor,
+        right_meta: Motor,
+        wheel_diameter: f64,
+        axle_track: f64,
+    ) -> Result<Self, Ev3Error> {
         let left = TachoMotor::get(left_meta.port)?;
         let right = TachoMotor::get(right_meta.port)?;
         let circumference = PI * wheel_diameter;
@@ -43,6 +51,7 @@ impl DriveBase {
             left_meta,
             right_meta,
             circumference,
+            axle_track,
         };
         drivebase.reset()?;
         Ok(drivebase)

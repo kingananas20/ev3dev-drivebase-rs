@@ -24,7 +24,6 @@ impl DriveBase {
     /// ```rust
     /// robot.drive(200, 500)?;
     /// ```
-    #[expect(clippy::cast_possible_truncation)]
     pub fn drive(
         &mut self,
         mut speed: i32,
@@ -44,42 +43,15 @@ impl DriveBase {
 
         speed = speed.abs();
 
-        self.set_speed(speed, direction)?;
+        self.set_speed(speed, speed)?;
 
-        let distance_abs = distance.abs();
+        let mut counts = self.calculate_counts(distance, distance)?;
 
-        let mut left_counts = ((f64::from(distance_abs) / self.circumference)
-            * f64::from(self.left.get_count_per_rot()?))
-        .round()
-        .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
+        counts.0 = counts.0.saturating_mul(direction.sign());
+        counts.1 = counts.1.saturating_mul(direction.sign());
 
-        let mut right_counts = ((f64::from(distance_abs) / self.circumference)
-            * f64::from(self.right.get_count_per_rot()?))
-        .round()
-        .clamp(f64::from(i32::MIN), f64::from(i32::MAX)) as i32;
-
-        left_counts = left_counts
-            .saturating_mul(self.left_meta.direction.sign())
-            .saturating_mul(direction.sign());
-        right_counts = right_counts
-            .saturating_mul(self.right_meta.direction.sign())
-            .saturating_mul(direction.sign());
-
-        let left_before = self.left.get_position()?;
-        let right_before = self.right.get_position()?;
-
-        self.run_to_rel_pos(Some(left_counts), Some(right_counts))?;
+        self.run_to_rel_pos(Some(counts.0), Some(counts.1))?;
         self.wait_until_not_moving(None);
-
-        let left_after = self.left.get_position()?;
-        let right_after = self.right.get_position()?;
-        println!(
-            "cmd L={} R={} | actual L={} R={}",
-            left_counts,
-            right_counts,
-            left_after - left_before,
-            right_after - right_before
-        );
 
         if !stop {
             self.run_forever()?;
