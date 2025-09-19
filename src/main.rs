@@ -12,9 +12,17 @@ fn main() -> Result<(), Ev3Error> {
     let drivebase = DriveBase::new(left, right, 43., 185.)?;
     drivebase.set_brake_mode(BrakeMode::Hold)?;
 
-    drivebase.turn(500, 90, None)?;
+    drivebase.turn(500, 90, 142.5)?;
+    sleep(Duration::from_secs(1));
+    drivebase.turn(500, -90, -142.5)?;
+    sleep(Duration::from_secs(1));
+    drivebase.turn(500, -90, 142.5)?;
+    sleep(Duration::from_secs(1));
+    drivebase.turn(500, 90, -142.5)?;
+
+    /*drivebase.turn(500, 90, None)?;
     sleep(Duration::from_secs(2));
-    drivebase.turn(500, -90, None)?;
+    drivebase.turn(500, -90, None)?;*/
 
     /*drivebase.drive(500, 50, true)?;
     sleep(Duration::from_secs(2));
