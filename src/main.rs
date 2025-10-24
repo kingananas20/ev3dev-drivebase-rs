@@ -14,11 +14,11 @@ fn main() -> Result<(), Ev3Error> {
 
     drivebase.turn(500, 90, 142.5)?;
     sleep(Duration::from_secs(1));
-    drivebase.turn(500, -90, -142.5)?;
+    drivebase.turn(-500, 90, 142.5)?;
     sleep(Duration::from_secs(1));
     drivebase.turn(500, -90, 142.5)?;
     sleep(Duration::from_secs(1));
-    drivebase.turn(500, 90, -142.5)?;
+    drivebase.turn(-500, -90, 142.5)?;
 
     /*drivebase.turn(500, 90, None)?;
     sleep(Duration::from_secs(2));
