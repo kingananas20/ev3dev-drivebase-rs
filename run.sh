@@ -1,11 +1,3 @@
 #!/bin/sh
 
-SERVER="robot"
-REMOTE_DIR="~"
-REMOTE_CMD="cd ~ && ./ev3-drivebase"
-
-# Copy binary using rsync
-rsync -ah --progress -z "$1" "$SERVER:$REMOTE_DIR"
-
-# Execute on EV3
-ssh "$SERVER" "$REMOTE_CMD"
+curl -N -X POST http://localhost:6767/run -H "Content-Type: application/json" -H "Accept: text/event-stream" -d "{\"src_path\": \"$1\", \"dst_path\": \"main\"}"

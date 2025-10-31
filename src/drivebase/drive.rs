@@ -10,8 +10,8 @@ impl DriveBase {
     /// # Parameters
     ///
     /// - `speed`: The speed at which to drive the robot, in tacho counts per second (positive for forward, negative for backward).
-    /// - `distance`: Optional distance to drive, in millimeters.  
-    ///     - If `Some(mm)`, the robot drives that distance and then stops.  
+    /// - `distance`: Optional distance to drive, in millimeters.
+    ///     - If `Some(mm)`, the robot drives that distance and then stops.
     ///     - If `None`, the robot will drive indefinitely until another command stops it.
     ///
     /// # Errors
@@ -25,7 +25,7 @@ impl DriveBase {
     /// robot.drive(200, 500)?;
     /// ```
     pub fn drive(
-        &mut self,
+        &self,
         mut speed: i32,
         distance: impl Into<i32>,
         stop: bool,
@@ -50,7 +50,7 @@ impl DriveBase {
         counts.0 = counts.0.saturating_mul(direction.sign());
         counts.1 = counts.1.saturating_mul(direction.sign());
 
-        self.run_to_rel_pos(Some(counts.0), Some(counts.1))?;
+        self.run_to_rel_pos(counts.0, counts.1)?;
         self.wait_until_not_moving(None);
 
         if !stop {

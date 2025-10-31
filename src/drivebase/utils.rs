@@ -76,16 +76,6 @@ impl DriveBase {
         self
     }
 
-    pub(super) fn run_to_rel_pos(
-        &self,
-        left_position: Option<i32>,
-        right_position: Option<i32>,
-    ) -> Result<&Self, Ev3Error> {
-        self.left.run_to_rel_pos(left_position)?;
-        self.right.run_to_rel_pos(right_position)?;
-        Ok(self)
-    }
-
     /// Returns the encoder counts for a distance in mm with the correct
     /// sign according to the motor direction.
     #[expect(clippy::cast_possible_truncation)]
