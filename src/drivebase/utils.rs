@@ -1,6 +1,5 @@
 use super::DriveBase;
 use ev3dev_lang_rust::Ev3Error;
-use std::time::Duration;
 
 impl DriveBase {
     /// Stops both motors and is called on drop.
@@ -68,12 +67,6 @@ impl DriveBase {
     /// Errors if it can't read the sysfs
     pub fn is_stalled(&self) -> Result<bool, Ev3Error> {
         Ok(self.left.is_stalled()? || self.right.is_stalled()?)
-    }
-
-    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
-        self.left.wait_until_not_moving(timeout);
-        self.right.wait_until_not_moving(timeout);
-        self
     }
 
     /// Returns the encoder counts for a distance in mm with the correct

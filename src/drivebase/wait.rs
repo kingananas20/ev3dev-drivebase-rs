@@ -13,4 +13,10 @@ impl DriveBase {
         F: Fn(&TachoMotor, &TachoMotor) -> bool + Send + Sync,
     {
     }
+
+    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
+            self.left.wait_until_not_moving(timeout);
+            self.right.wait_until_not_moving(timeout);
+            self
+        }
 }
