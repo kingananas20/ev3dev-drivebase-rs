@@ -9,7 +9,7 @@ use std::{thread::sleep, time::Duration};
 fn main() -> Result<(), Ev3Error> {
     let left = Motor::new(MotorPort::OutD, Direction::CounterClockwise);
     let right = Motor::new(MotorPort::OutC, Direction::Clockwise);
-    let drivebase = DriveBase::new(left, right, 43., 185.)?;
+    let drivebase = DriveBase::new(left, right, 43.2, 185.)?;
     drivebase.set_brake_mode(BrakeMode::Hold)?;
 
     /*drivebase.turn(500, 90, 142.5)?;
@@ -24,10 +24,6 @@ fn main() -> Result<(), Ev3Error> {
     sleep(Duration::from_secs(2));
     drivebase.turn(500, -90, None)?;*/
 
-    drivebase.drive(500, 50, true)?;
-    sleep(Duration::from_secs(2));
-    drivebase.drive(500, -50, true)?;
-    sleep(Duration::from_secs(2));
     drivebase.drive(500, 50, true)?;
     sleep(Duration::from_secs(2));
     drivebase.drive(500, -50, true)?;
