@@ -2,12 +2,18 @@
 name = "ev3-drivebase"
 version = "0.1.0"
 edition = "2024"
-description = "A DriveBase for the EV3 similar to the Python one"
+description = "A DriveBase for the EV3"
 license-file = "LICENSE"
 repository = "https://github.com/Kingananas20/ev3dev-drivebase-rs"
 readme = "README.md"
 keywords = ["ev3", "robotics", "drivebase"]
 categories = ["api-bindings", "embedded-development", "hardware-support"]
+
+include = [
+    "src/**",
+    "Cargo.toml",
+    "Cargo.lock"
+]
 
 [dependencies]
 ev3dev-lang-rust = "0.15.0"

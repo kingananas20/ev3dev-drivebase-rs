@@ -1,6 +1,5 @@
 mod brake_mode;
 mod drive;
-pub mod lf;
 mod ramping;
 mod run;
 mod speed;
