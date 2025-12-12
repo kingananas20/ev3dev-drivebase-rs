@@ -5,6 +5,7 @@ use ev3_drivebase::{
     ev3dev_lang_rust::{Ev3Error, motors::MotorPort},
 };
 use ev3dev_lang_rust::sensors::{ColorSensor, SensorPort};
+use std::{thread::sleep, time::Duration};
 
 fn main() -> Result<(), Ev3Error> {
     let left = Motor::new(MotorPort::OutD, Direction::Clockwise);
@@ -22,7 +23,6 @@ fn main() -> Result<(), Ev3Error> {
 
     println!("Drivebase initialisiert");
 
-    use std::{thread::sleep, time::Duration};
     drivebase.turn(500, 90, None)?;
     sleep(Duration::from_secs(2));
     drivebase.turn(500, -90, None)?;
