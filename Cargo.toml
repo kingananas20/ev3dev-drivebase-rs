@@ -1,6 +1,6 @@
 [package]
 name = "ev3-drivebase"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "A DriveBase for the EV3"
 license-file = "LICENSE"
@@ -12,7 +12,8 @@ categories = ["api-bindings", "hardware-support"]
 include = [
     "src/**",
     "Cargo.toml",
-    "Cargo.lock"
+    "Cargo.lock",
+    "README.md"
 ]
 
 [dependencies]

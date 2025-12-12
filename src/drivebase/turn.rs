@@ -4,7 +4,77 @@ use ev3dev_lang_rust::Ev3Error;
 use std::f64::consts::PI;
 
 impl DriveBase {
-    #[expect(clippy::missing_errors_doc, missing_docs)]
+    /// Turns the robot by a specified angle, either in place or along an arc.
+    ///
+    /// This method provides two types of turns:
+    ///
+    /// - **In-place turn** (radius = `None`): The robot rotates around its center point
+    /// - **Arc turn** (radius = `Some(r)`): The robot follows a circular path with the given radius
+    ///
+    /// # Parameters
+    ///
+    /// - `speed`: The speed in degrees per second (motor rotation, not robot turning speed)
+    /// - `degree`: The angle to turn in degrees. Positive for counter-clockwise, negative for clockwise.
+    /// - `radius`: The turning radius in millimeters:
+    ///   - `None`: Turn in place around the robot's center
+    ///   - `Some(r)`: Turn along an arc with radius `r`
+    ///     - `r = 0`: Same as in-place turn
+    ///     - `r > 0`: Outer wheel follows arc at distance `r` from turn center
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the motors cannot be commanded or calculations fail.
+    ///
+    /// # Examples
+    ///
+    /// In-place turns:
+    ///
+    /// ```no_run
+    /// use ev3_drivebase::{DriveBase, Motor, Direction};
+    /// use ev3_drivebase::ev3dev_lang_rust::{Ev3Error, motors::MotorPort};
+    ///
+    /// fn main() -> Result<(), Ev3Error> {
+    ///     let left = Motor::new(MotorPort::OutA, Direction::Clockwise);
+    ///     let right = Motor::new(MotorPort::OutB, Direction::CounterClockwise);
+    ///     let mut drivebase = DriveBase::new(left, right, 43.2, 185.0)?;
+    ///
+    ///     // Turn 90 degrees counter-clockwise in place
+    ///     drivebase.turn(200, 90, None)?;
+    ///
+    ///     // Turn 180 degrees clockwise in place
+    ///     drivebase.turn(200, -180, None)?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
+    ///
+    /// Arc turns with radius:
+    ///
+    /// ```no_run
+    /// use ev3_drivebase::{DriveBase, Motor, Direction};
+    /// use ev3_drivebase::ev3dev_lang_rust::{Ev3Error, motors::MotorPort};
+    ///
+    /// fn main() -> Result<(), Ev3Error> {
+    ///     let left = Motor::new(MotorPort::OutA, Direction::Clockwise);
+    ///     let right = Motor::new(MotorPort::OutB, Direction::CounterClockwise);
+    ///     let mut drivebase = DriveBase::new(left, right, 43.2, 185.0)?;
+    ///
+    ///     // Turn 90 degrees following a 200mm radius arc
+    ///     drivebase.turn(200, 90, Some(200.0))?;
+    ///
+    ///     // Turn 45 degrees with a tight 50mm radius
+    ///     drivebase.turn(150, 45, Some(50.0))?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
+    ///
+    /// # Behavior
+    ///
+    /// - If `degree` is 0, the method returns immediately without moving
+    /// - Negative radius values are converted to positive (radius is always absolute)
+    /// - The method blocks until the turn is complete
+    /// - For arc turns, the inner wheel moves slower than the outer wheel
     pub fn turn(
         &mut self,
         speed: i32,
