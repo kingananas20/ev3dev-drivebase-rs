@@ -7,7 +7,7 @@ license-file = "LICENSE"
 repository = "https://github.com/Kingananas20/ev3dev-drivebase-rs"
 readme = "README.md"
 keywords = ["ev3", "robotics", "drivebase"]
-categories = ["api-bindings", "embedded-development", "hardware-support"]
+categories = ["api-bindings", "hardware-support"]
 
 include = [
     "src/**",
