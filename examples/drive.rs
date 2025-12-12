@@ -6,7 +6,7 @@ use ev3_drivebase::{BrakeMode, Direction, DriveBase, Motor};
 fn main() -> Result<(), Ev3Error> {
     let left_meta = Motor::new(MotorPort::OutA, Direction::Clockwise);
     let right_meta = Motor::new(MotorPort::OutB, Direction::CounterClockwise);
-    let drivebase = DriveBase::new(left_meta, right_meta, 43.2, 185.)?;
+    let mut drivebase = DriveBase::new(left_meta, right_meta, 43.2, 185.)?;
     drivebase
         .set_brake_mode(BrakeMode::Hold)?
         .set_acceleration(4000)?

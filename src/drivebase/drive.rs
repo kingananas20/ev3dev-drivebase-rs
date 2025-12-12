@@ -5,8 +5,6 @@ use ev3dev_lang_rust::Ev3Error;
 impl DriveBase {
     /// Drives the robot forward or backward at the specified speed.
     ///
-    /// It's not accurate if the brake mode is set to `Coast`.
-    ///
     /// # Parameters
     ///
     /// - `speed`: The speed at which to drive the robot, in tacho counts per second (positive for forward, negative for backward).
@@ -25,7 +23,7 @@ impl DriveBase {
     /// robot.drive(200, 500)?;
     /// ```
     pub fn drive(
-        &self,
+        &mut self,
         speed: i32,
         distance: impl Into<i32>,
         stop: bool,

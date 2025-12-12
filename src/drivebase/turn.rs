@@ -6,11 +6,11 @@ use std::f64::consts::PI;
 impl DriveBase {
     #[expect(clippy::missing_errors_doc, missing_docs)]
     pub fn turn(
-        &self,
+        &mut self,
         speed: i32,
         degree: i32,
         radius: impl Into<Option<f64>>,
-    ) -> Result<&Self, Ev3Error> {
+    ) -> Result<&mut Self, Ev3Error> {
         let mut radius: Option<f64> = radius.into();
         radius = radius.map(f64::abs);
 
@@ -18,14 +18,14 @@ impl DriveBase {
             return Ok(self);
         }
 
-        radius.map_or_else(
-            || self.turn_in_place(speed, degree),
-            |radius| self.turn_with_radius(speed, degree, radius),
-        )
+        match radius {
+            None => self.turn_in_place(speed, degree),
+            Some(radius) => self.turn_with_radius(speed, degree, radius),
+        }
     }
 
     #[expect(clippy::cast_possible_truncation)]
-    fn turn_in_place(&self, speed: i32, degree: i32) -> Result<&Self, Ev3Error> {
+    fn turn_in_place(&mut self, speed: i32, degree: i32) -> Result<&mut Self, Ev3Error> {
         let speed = speed.abs();
         let axle_radius = self.axle_track / 2.;
         let arc_length = (axle_radius * f64::from(degree) * (PI / 180.))
@@ -54,7 +54,17 @@ impl DriveBase {
     }
 
     #[expect(clippy::cast_possible_truncation)]
-    fn turn_with_radius(&self, speed: i32, degree: i32, radius: f64) -> Result<&Self, Ev3Error> {
+    fn turn_with_radius(
+        &mut self,
+        mut speed: i32,
+        degree: i32,
+        radius: f64,
+    ) -> Result<&mut Self, Ev3Error> {
+        speed = speed.clamp(
+            -self.left.get_max_speed()? / 2,
+            self.left.get_max_speed()? / 2,
+        );
+
         let theta = (f64::from(degree)).to_radians();
         let theta_abs = theta.abs();
         let half_track = self.axle_track / 2.0;

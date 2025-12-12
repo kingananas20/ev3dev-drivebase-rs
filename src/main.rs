@@ -4,29 +4,30 @@ use ev3_drivebase::{
     BrakeMode, Direction, DriveBase, Motor,
     ev3dev_lang_rust::{Ev3Error, motors::MotorPort},
 };
-use std::{thread::sleep, time::Duration};
+use ev3dev_lang_rust::sensors::{ColorSensor, SensorPort};
 
 fn main() -> Result<(), Ev3Error> {
-    let left = Motor::new(MotorPort::OutD, Direction::CounterClockwise);
-    let right = Motor::new(MotorPort::OutC, Direction::Clockwise);
-    let drivebase = DriveBase::new(left, right, 43.2, 185.)?;
+    let left = Motor::new(MotorPort::OutD, Direction::Clockwise);
+    let right = Motor::new(MotorPort::OutC, Direction::CounterClockwise);
+    let mut drivebase = DriveBase::new(left, right, 43.2, 185.)?;
     drivebase
         .set_brake_mode(BrakeMode::Hold)?
-        .set_acceleration(1000)?
-        .set_deceleration(1000)?;
+        .set_acceleration(500)?
+        .set_deceleration(500)?;
 
-    /*drivebase.turn(500, 90, 142.5)?;
-    sleep(Duration::from_secs(1));
-    drivebase.turn(-500, 90, 142.5)?;
-    sleep(Duration::from_secs(1));
-    drivebase.turn(500, -90, 142.5)?;
-    sleep(Duration::from_secs(1));
-    drivebase.turn(-500, -90, 142.5)?;*/
+    let left_sensor = ColorSensor::get(SensorPort::In1)?;
+    let right_sensor = ColorSensor::get(SensorPort::In2)?;
 
-    /*drivebase.turn(500, 90, None)?;
+    drivebase.add_colorsensor(left_sensor, right_sensor);
+
+    println!("Drivebase initialisiert");
+
+    use std::{thread::sleep, time::Duration};
+    drivebase.turn(500, 90, None)?;
     sleep(Duration::from_secs(2));
-    drivebase.turn(500, -90, None)?;*/
+    drivebase.turn(500, -90, None)?;
 
+    /*use std::{thread::sleep, time::Duration};
     drivebase.drive(500, 50 * 2, true)?;
     sleep(Duration::from_secs(2));
     drivebase.drive(500, -50 * 2, true)?;
@@ -34,7 +35,7 @@ fn main() -> Result<(), Ev3Error> {
     drivebase.drive(500, 50 * 2, true)?;
     sleep(Duration::from_secs(2));
     drivebase.drive(500, -50 * 2, true)?;
-    sleep(Duration::from_secs(2));
+    sleep(Duration::from_secs(2));*/
 
     /*let left_color_sensor = ev3dev_lang_rust::sensors::ColorSensor::get(SensorPort::In1)?;
 

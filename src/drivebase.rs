@@ -1,5 +1,6 @@
 mod brake_mode;
 mod drive;
+pub mod lf;
 mod ramping;
 mod run;
 mod speed;
@@ -10,7 +11,7 @@ mod wait;
 pub use brake_mode::BrakeMode;
 
 use crate::Motor;
-use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor};
+use ev3dev_lang_rust::{Ev3Error, motors::TachoMotor, sensors::ColorSensor};
 use std::f64::consts::PI;
 
 /// The `DriveBase` struct which holds all the needed fields
@@ -20,6 +21,12 @@ pub struct DriveBase {
     pub left: TachoMotor,
     /// The right motor of the `DriveBase`
     pub right: TachoMotor,
+    /// Current speed of the robot
+    pub current_speed: i32,
+    /// left color sensor if specified, useful for line following methods
+    pub left_sensor: Option<ColorSensor>,
+    /// right color sensor if specified, useful for line following methods
+    pub right_sensor: Option<ColorSensor>,
     /// Metadata of the left motor
     pub left_meta: Motor,
     /// Metadata of the right motor
@@ -48,6 +55,9 @@ impl DriveBase {
         let drivebase = Self {
             left,
             right,
+            current_speed: 0,
+            left_sensor: None,
+            right_sensor: None,
             left_meta,
             right_meta,
             circumference,
@@ -55,5 +65,16 @@ impl DriveBase {
         };
         drivebase.reset()?;
         Ok(drivebase)
+    }
+
+    /// Add left and right colorsensors
+    pub fn add_colorsensor(
+        &mut self,
+        left_sensor: ColorSensor,
+        right_sensor: ColorSensor,
+    ) -> &Self {
+        self.left_sensor = Some(left_sensor);
+        self.right_sensor = Some(right_sensor);
+        self
     }
 }

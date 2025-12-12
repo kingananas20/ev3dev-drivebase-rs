@@ -2,5 +2,5 @@
 target = "armv5te-unknown-linux-musleabi"
 
 [target.armv5te-unknown-linux-musleabi]
-runner = 'sh ./run.sh'
+runner = '../ev3-runner/target/release/ev3-runner client run --host 192.168.137.3:6767'
 linker = "rust-lld"
