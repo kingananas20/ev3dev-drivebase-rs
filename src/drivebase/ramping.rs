@@ -1,3 +1,5 @@
+use std::ops::Div;
+
 use super::DriveBase;
 use ev3dev_lang_rust::Ev3Error;
 
@@ -39,8 +41,9 @@ impl DriveBase {
     /// }
     /// ```
     pub fn set_acceleration(&self, acceleration: i32) -> Result<&Self, Ev3Error> {
-        self.left.set_ramp_up_sp(acceleration)?;
-        self.right.set_ramp_up_sp(acceleration)?;
+        let (left_time, right_time) = self.calculate_time(acceleration)?;
+        self.left.set_ramp_up_sp(left_time)?;
+        self.right.set_ramp_up_sp(right_time)?;
         Ok(self)
     }
 
@@ -87,8 +90,17 @@ impl DriveBase {
     /// - With `BrakeMode::Coast`: Deceleration has limited effect
     /// - With `BrakeMode::Brake` or `BrakeMode::Hold`: Full effect
     pub fn set_deceleration(&self, deceleration: i32) -> Result<&Self, Ev3Error> {
-        self.left.set_ramp_down_sp(deceleration)?;
-        self.right.set_ramp_down_sp(deceleration)?;
+        let (left_time, right_time) = self.calculate_time(deceleration)?;
+        self.left.set_ramp_down_sp(left_time)?;
+        self.right.set_ramp_down_sp(right_time)?;
         Ok(self)
+    }
+
+    fn calculate_time(&self, acceleration: i32) -> Result<(i32, i32), Ev3Error> {
+        let left_max_speed = self.left.get_max_speed()?;
+        let right_max_speed = self.right.get_max_speed()?;
+        let left_time = left_max_speed.div(acceleration);
+        let right_time = right_max_speed.div(acceleration);
+        Ok((left_time, right_time))
     }
 }

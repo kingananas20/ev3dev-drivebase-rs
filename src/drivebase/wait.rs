@@ -15,7 +15,8 @@ impl DriveBase {
     {
     }
 
-    pub(super) fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
+    /// Waits until both motors are not moving anymore
+    pub fn wait_until_not_moving(&self, timeout: Option<Duration>) -> &Self {
         self.left.wait_until_not_moving(timeout);
         self.right.wait_until_not_moving(timeout);
         self

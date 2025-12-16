@@ -271,7 +271,7 @@ impl DriveBase {
     ///
     /// Returns an error if encoder information cannot be read from the motors.
     #[expect(clippy::cast_possible_truncation)]
-    pub(super) fn calculate_counts(
+    pub fn calculate_counts(
         &self,
         left_distance: i32,
         right_distance: i32,
